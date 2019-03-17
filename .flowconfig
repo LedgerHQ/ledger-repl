@@ -1,0 +1,12 @@
+[ignore]
+.*/node_modules/@parcel/watcher/test/tmp/config.json
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]
