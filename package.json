@@ -9,23 +9,22 @@
     "start": "yarn parcel src/renderer/index.html"
   },
   "dependencies": {
-    "@ledgerhq/devices": "^4.46.0",
-    "@ledgerhq/hw-transport": "^4.46.0",
-    "@ledgerhq/hw-transport-node-hid": "^4.46.0",
-    "@ledgerhq/hw-transport-u2f": "^4.46.0",
-    "@ledgerhq/hw-transport-web-ble": "^4.46.0",
-    "@ledgerhq/hw-transport-webauthn": "^4.46.0",
-    "@ledgerhq/hw-transport-webusb": "^4.46.0",
-    "@ledgerhq/live-common": "^4.28.1",
+    "@ledgerhq/devices": "^4.48.0",
+    "@ledgerhq/hw-transport": "^4.48.0",
+    "@ledgerhq/hw-transport-u2f": "^4.48.0",
+    "@ledgerhq/hw-transport-web-ble": "^4.48.0",
+    "@ledgerhq/hw-transport-webauthn": "^4.48.0",
+    "@ledgerhq/hw-transport-webusb": "^4.48.0",
+    "@ledgerhq/live-common": "^4.34.1",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",
-    "carlo": "^0.9.43",
-    "react": "^0.14.0 || ^15.0.0 || ^16.0.0",
-    "react-dom": "^16.8.4",
-    "react-inspector": "^2.3.1",
+    "carlo": "^0.9.45",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "react-inspector": "^3.0.0",
     "react-select": "^2.4.2",
-    "styled-components": "^4.1.3"
+    "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -33,6 +32,6 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "flow-bin": "^0.95.1",
-    "parcel": "^1.12.2"
+    "parcel": "^1.12.3"
   }
 }

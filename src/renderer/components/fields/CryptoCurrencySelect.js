@@ -17,7 +17,7 @@ type Props = {
 };
 
 const TokenSelect = ({ value, onChange, filterFamilies }: Props) => {
-  let currencies = listCryptoCurrencies();
+  let currencies = listCryptoCurrencies(true);
   if (filterFamilies) {
     currencies = currencies.filter(c => filterFamilies.includes(c.family));
   }
