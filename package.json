@@ -20,11 +20,11 @@
   "dependencies": {
     "@ledgerhq/devices": "^4.48.0",
     "@ledgerhq/hw-transport": "^4.48.0",
-    "@ledgerhq/hw-transport-u2f": "^4.48.0",
-    "@ledgerhq/hw-transport-web-ble": "^4.48.0",
-    "@ledgerhq/hw-transport-webauthn": "^4.48.0",
-    "@ledgerhq/hw-transport-webusb": "^4.48.0",
-    "@ledgerhq/live-common": "4.41.0",
+    "@ledgerhq/hw-transport-u2f": "^4.54.0",
+    "@ledgerhq/hw-transport-web-ble": "^4.54.0",
+    "@ledgerhq/hw-transport-webauthn": "^4.54.0",
+    "@ledgerhq/hw-transport-webusb": "^4.54.0",
+    "@ledgerhq/live-common": "beta",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",
@@ -32,7 +32,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-inspector": "^3.0.2",
-    "react-select": "^2.4.2",
+    "react-select": "^2.4.3",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "flow-bin": "^0.96.0",
+    "flow-bin": "^0.97.0",
     "parcel": "^1.12.3",
     "pkg": "^4.3.7"
   }

@@ -5,6 +5,7 @@ import editDeviceName from "@ledgerhq/live-common/lib/hw/editDeviceName";
 import getDeviceName from "@ledgerhq/live-common/lib/hw/getDeviceName";
 import getDeviceInfo from "@ledgerhq/live-common/lib/hw/getDeviceInfo";
 import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
+import getVersion from "@ledgerhq/live-common/lib/hw/getVersion";
 import getAppAndVersion from "@ledgerhq/live-common/lib/hw/getAppAndVersion";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
@@ -21,14 +22,20 @@ const mapTargetId = (args, { deviceInfo }) => [deviceInfo.targetId, ...args];
 
 export const commands: Command[] = [
   {
-    id: "getDeviceInfo",
-    exec: getDeviceInfo,
+    id: "getVersion",
+    exec: getVersion,
     form: []
   },
 
   {
     id: "getAppAndVersion",
     exec: getAppAndVersion,
+    form: []
+  },
+
+  {
+    id: "getDeviceInfo",
+    exec: getDeviceInfo,
     form: []
   },
 
@@ -100,9 +107,12 @@ export const commands: Command[] = [
     id: "getAddress",
     exec: getAddress,
     form: [
-      { type: "cryptocurrency", default: bitcoinCurrency },
-      { type: "derivationPath", default: "44'/0'/0'/0/0" },
-      { type: "checkbox", label: "Verify" }
+      {
+        currency: { type: "cryptocurrency", default: bitcoinCurrency },
+        path: { type: "derivationPath", default: "44'/0'/0'/0/0" },
+        derivationMode: { type: "derivationMode", default: "" },
+        verify: { type: "checkbox", label: "Verify" }
+      }
     ]
   }
 ];
