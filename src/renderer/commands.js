@@ -8,6 +8,7 @@ import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
 import uninstallApp from "@ledgerhq/live-common/lib/hw/uninstallApp";
+import installFinalFirmware from "@ledgerhq/live-common/lib/hw/installFinalFirmware";
 import debugAppInfosForCurrency from "@ledgerhq/live-common/lib/hw/debugAppInfosForCurrency";
 import { cmd } from "./helpers/commands";
 import { getCryptoCurrencyById } from "@ledgerhq/live-common/lib/currencies";
@@ -33,6 +34,8 @@ export const commands: Command[] = [
     },
     form: []
   },
+
+  { id: "installFinalFirmware", exec: installFinalFirmware, form: [] },
 
   {
     id: "installApp",
