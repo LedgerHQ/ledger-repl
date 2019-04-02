@@ -117,8 +117,12 @@ const transportLabels = {
   webusb: "WebUSB",
   hid: "node-hid",
   u2f: "U2F",
-  webauth: "WebAuthn"
+  webauthn: "WebAuthn"
 };
+
+if (typeof setupHID === "undefined") {
+  delete transportLabels.hid;
+}
 
 const eventObservable = merge(
   socketLogs.pipe(

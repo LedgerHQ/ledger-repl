@@ -15,14 +15,14 @@
     "@ledgerhq/hw-transport-web-ble": "^4.48.0",
     "@ledgerhq/hw-transport-webauthn": "^4.48.0",
     "@ledgerhq/hw-transport-webusb": "^4.48.0",
-    "@ledgerhq/live-common": "^4.34.1",
+    "@ledgerhq/live-common": "^4.38.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",
     "carlo": "^0.9.45",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5",
-    "react-inspector": "^3.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-inspector": "^3.0.2",
     "react-select": "^2.4.2",
     "styled-components": "^4.2.0"
   },
@@ -31,7 +31,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "flow-bin": "^0.95.1",
+    "flow-bin": "^0.96.0",
     "parcel": "^1.12.3"
   }
 }
