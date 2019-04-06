@@ -15,7 +15,7 @@
     "@ledgerhq/hw-transport-web-ble": "^4.48.0",
     "@ledgerhq/hw-transport-webauthn": "^4.48.0",
     "@ledgerhq/hw-transport-webusb": "^4.48.0",
-    "@ledgerhq/live-common": "4.39.0-beta.0",
+    "@ledgerhq/live-common": "4.41.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",

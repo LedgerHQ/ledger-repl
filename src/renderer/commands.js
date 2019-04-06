@@ -5,6 +5,7 @@ import editDeviceName from "@ledgerhq/live-common/lib/hw/editDeviceName";
 import getDeviceName from "@ledgerhq/live-common/lib/hw/getDeviceName";
 import getDeviceInfo from "@ledgerhq/live-common/lib/hw/getDeviceInfo";
 import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
+import getAppAndVersion from "@ledgerhq/live-common/lib/hw/getAppAndVersion";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
 import uninstallApp from "@ledgerhq/live-common/lib/hw/uninstallApp";
@@ -22,6 +23,12 @@ export const commands: Command[] = [
   {
     id: "getDeviceInfo",
     exec: getDeviceInfo,
+    form: []
+  },
+
+  {
+    id: "getAppAndVersion",
+    exec: getAppAndVersion,
     form: []
   },
 
