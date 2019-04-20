@@ -2,10 +2,7 @@
 
 set -e
 
-cd ../..
 PATH=$(yarn bin):$PATH
-cd -
-
 export NODE_ENV=development
 
 rm -rf dist
