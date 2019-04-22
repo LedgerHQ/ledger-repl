@@ -5,7 +5,9 @@ import CryptoCurrencySelect from "./CryptoCurrencySelect";
 import AsciiField from "./AsciiField";
 import CheckboxField from "./CheckboxField";
 import ApplicationField from "./ApplicationField";
+import DerivationModeField from "./DerivationModeField";
 import type { DataTypeAscii } from "./AsciiField";
+import type { DataTypeDerivationMode } from "./DerivationModeField";
 import type { DataTypeCheckbox } from "./CheckboxField";
 import type { DataTypeDerivationPath } from "./AccountField";
 import type { DataTypeCryptoCurrency } from "./CryptoCurrencySelect";
@@ -16,7 +18,8 @@ export type DataType =
   | DataTypeCheckbox
   | DataTypeDerivationPath
   | DataTypeCryptoCurrency
-  | DataTypeApplication;
+  | DataTypeApplication
+  | DataTypeDerivationMode;
 
 export default {
   checkbox: CheckboxField,
@@ -24,5 +27,6 @@ export default {
   cryptocurrency: CryptoCurrencySelect,
   derivationPath: AccountField,
   ascii: AsciiField,
-  application: ApplicationField
+  application: ApplicationField,
+  derivationMode: DerivationModeField
 };

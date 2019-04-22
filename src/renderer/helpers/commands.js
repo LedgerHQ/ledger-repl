@@ -29,7 +29,7 @@ export type Command = {
 };
 
 type FormObj = { [_: string]: Form };
-export type Form = DataType | Form[];
+export type Form = DataType | FormObj | Form[];
 
 export const cmd = (id: string, exec: Exec, ...form: Form[]) => ({
   id,
