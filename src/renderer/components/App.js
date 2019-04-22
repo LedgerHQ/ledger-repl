@@ -299,8 +299,8 @@ export default () => {
 
   const onSubmitApdu = useCallback(
     async e => {
-      if (!apduInputRef.current || !transport) return;
       e.preventDefault();
+      if (!apduInputRef.current || !transport) return;
       try {
         const value = Buffer.from(apduInputRef.current.value, "hex");
         apduInputRef.current.value = "";
