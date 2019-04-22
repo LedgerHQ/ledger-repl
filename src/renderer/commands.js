@@ -8,6 +8,8 @@ import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
 import getVersion from "@ledgerhq/live-common/lib/hw/getVersion";
 import getAppAndVersion from "@ledgerhq/live-common/lib/hw/getAppAndVersion";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
+import openApp from "@ledgerhq/live-common/lib/hw/openApp";
+import quitApp from "@ledgerhq/live-common/lib/hw/quitApp";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
 import uninstallApp from "@ledgerhq/live-common/lib/hw/uninstallApp";
 import installFinalFirmware from "@ledgerhq/live-common/lib/hw/installFinalFirmware";
@@ -77,6 +79,18 @@ export const commands: Command[] = [
         type: "application"
       }
     ]
+  },
+
+  {
+    id: "openApp",
+    exec: openApp,
+    form: [{ type: "ascii" }]
+  },
+
+  {
+    id: "quitApp",
+    exec: quitApp,
+    form: []
   },
 
   {
