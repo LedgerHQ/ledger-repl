@@ -88,8 +88,8 @@ export const commands: Command[] = [
   },
 
   {
-    id: "closeApp",
-    exec: closeApp,
+    id: "quitApp",
+    exec: quitApp,
     form: []
   },
 
