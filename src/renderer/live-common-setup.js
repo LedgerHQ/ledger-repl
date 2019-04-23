@@ -101,3 +101,28 @@ registerTransportModule({
       ? Promise.resolve() // nothing to do
       : null
 });
+
+registerTransportModule({
+  id: "hid",
+
+  open: async (id: string): Promise<*> => {
+    if (id.startsWith("hid")) {
+      await window.ledgerHidTransport("open");
+      return {
+        on: () => {},
+        setDebugMode: () => {},
+        setScrambleKey: () => {},
+        decorateAppAPIMethods: () => {},
+        close: () => window.ledgerHidTransport("close"),
+        send: async (...args) => {
+          const { data } = await window.ledgerHidTransport("send", ...args);
+          return Buffer.from(data);
+        }
+      };
+    }
+    return null;
+  },
+
+  disconnect: id =>
+    id.startsWith("hid") ? window.ledgerHidTransport("close") : null
+});

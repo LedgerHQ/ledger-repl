@@ -120,7 +120,7 @@ const transportLabels = {
   webauthn: "WebAuthn"
 };
 
-if (typeof setupHID === "undefined") {
+if (typeof ledgerHidTransport === "undefined") {
   delete transportLabels.hid;
 }
 

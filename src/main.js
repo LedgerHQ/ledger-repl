@@ -1,6 +1,8 @@
+import "babel-polyfill";
 import carlo from "carlo";
 import path from "path";
 import theme from "./renderer/theme";
+import exposeHidTransport from "./exposeHidTransport";
 
 const exts =
   "/Users/grenaudeau/Library/Application Support/Electron/extensions/fmkadmapgofadopljbjfkapdkoienihi";
@@ -16,5 +18,6 @@ const exts =
   app.on("exit", () => process.exit());
   console.log(path.join(__dirname, "../www"));
   app.serveFolder(path.join(__dirname, "../www"));
+  exposeHidTransport(app);
   await app.load("index.html");
 })();
