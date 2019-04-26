@@ -125,7 +125,8 @@ export const commands: Command[] = [
         currency: { type: "cryptocurrency", default: bitcoinCurrency },
         path: { type: "derivationPath", default: "44'/0'/0'/0/0" },
         derivationMode: { type: "derivationMode", default: "" },
-        verify: { type: "checkbox", label: "Verify" }
+        verify: { type: "checkbox", label: "Verify" },
+        askChainCode: { type: "checkbox", label: "ask chainCode" }
       }
     ]
   }
