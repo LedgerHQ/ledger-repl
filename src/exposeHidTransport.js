@@ -1,18 +1,40 @@
+// @flow
+import invariant from "invariant";
 import TransportNodeHid from "@ledgerhq/hw-transport-node-hid-noevents";
+import { serializeError } from "@ledgerhq/errors";
 
 let transport = null;
 
-export default app => {
+export default (app: *) => {
   app.exposeFunction("ledgerHidTransport", async (cmd, ...args) => {
-    if (cmd === "open") {
-      transport = await TransportNodeHid.create();
-    }
-    if (cmd === "close") {
-      await transport.close();
-      transport = null;
-    }
-    if (cmd === "send") {
-      return transport.send(...args);
+    try {
+      switch (cmd) {
+        case "open":
+          invariant(!transport, "HID is already opened");
+          transport = await TransportNodeHid.open("");
+          transport.setDebugMode(true);
+          transport.on("disconnect", () => {
+            transport = null;
+          });
+          return;
+
+        case "close":
+          invariant(transport, "HID was not opened");
+          try {
+            await transport.close();
+          } finally {
+            transport = null;
+          }
+          return true;
+
+        case "exchange":
+          invariant(transport, "HID was not opened");
+          const [hex] = args;
+          const response = await transport.exchange(Buffer.from(hex, "hex"));
+          return response.toString("hex");
+      }
+    } catch (e) {
+      throw serializeError(e);
     }
   });
 };

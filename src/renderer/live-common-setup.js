@@ -1,7 +1,13 @@
 // @flow
 import axios from "axios";
 import { Observable } from "rxjs";
+import {
+  deserializeError,
+  DisconnectedDevice,
+  DisconnectedDeviceDuringOperation
+} from "@ledgerhq/errors";
 import { map } from "rxjs/operators";
+import Transport from "@ledgerhq/hw-transport";
 import TransportWebAuthn from "@ledgerhq/hw-transport-webauthn";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
@@ -102,27 +108,79 @@ registerTransportModule({
       : null
 });
 
-registerTransportModule({
-  id: "hid",
+const { ledgerHidTransport } = window;
+if (ledgerHidTransport) {
+  const cmd = async (...args) => {
+    try {
+      const res = await ledgerHidTransport(...args);
+      return res;
+    } catch (e) {
+      throw deserializeError(e);
+    }
+  };
 
-  open: async (id: string): Promise<*> => {
-    if (id.startsWith("hid")) {
-      await window.ledgerHidTransport("open");
+  class HIDProxy extends Transport<*> {
+    static isSupported = () => Promise.resolve(true);
+    static list = () => Promise.resolve([null]);
+    static listen = o => {
+      let unsubscribed;
+      setTimeout(() => {
+        if (unsubscribed) return;
+        o.next({ type: "add", descriptor: null });
+        o.complete();
+      }, 0);
       return {
-        on: () => {},
-        setDebugMode: () => {},
-        setScrambleKey: () => {},
-        decorateAppAPIMethods: () => {},
-        close: () => window.ledgerHidTransport("close"),
-        send: async (...args) => {
-          const { data } = await window.ledgerHidTransport("send", ...args);
-          return Buffer.from(data);
+        unsubscribe: () => {
+          unsubscribed = true;
         }
       };
-    }
-    return null;
-  },
+    };
 
-  disconnect: id =>
-    id.startsWith("hid") ? window.ledgerHidTransport("close") : null
-});
+    static open = async () => {
+      await cmd("open");
+      return new HIDProxy();
+    };
+
+    setScrambleKey() {}
+
+    close() {
+      return cmd("close");
+    }
+
+    async exchange(apdu: Buffer): Promise<Buffer> {
+      const { debug } = this;
+      const inputHex = apdu.toString("hex");
+      if (debug) {
+        debug("=> " + inputHex);
+      }
+      try {
+        const outputHex = await cmd("exchange", inputHex);
+        if (debug) {
+          debug("<= " + outputHex);
+        }
+        return Buffer.from(outputHex, "hex");
+      } catch (e) {
+        if (
+          e instanceof DisconnectedDeviceDuringOperation ||
+          e instanceof DisconnectedDevice
+        ) {
+          this.emit("disconnect", e);
+        }
+        throw e;
+      }
+    }
+  }
+
+  registerTransportModule({
+    id: "hid",
+
+    open: id => {
+      if (id.startsWith("hid")) {
+        return HIDProxy.open();
+      }
+      return null;
+    },
+
+    disconnect: id => (id.startsWith("hid") ? cmd("close") : null)
+  });
+}
