@@ -18,14 +18,14 @@
     "assets": "dist/www/*"
   },
   "dependencies": {
-    "@ledgerhq/devices": "^4.48.0",
-    "@ledgerhq/hw-transport": "^4.48.0",
-    "@ledgerhq/hw-transport-node-hid-noevents": "^4.54.0",
-    "@ledgerhq/hw-transport-u2f": "^4.54.0",
-    "@ledgerhq/hw-transport-web-ble": "^4.54.0",
-    "@ledgerhq/hw-transport-webauthn": "^4.54.0",
-    "@ledgerhq/hw-transport-webusb": "^4.54.0",
-    "@ledgerhq/live-common": "beta",
+    "@ledgerhq/devices": "^4.55.0",
+    "@ledgerhq/hw-transport": "^4.55.0",
+    "@ledgerhq/hw-transport-node-hid-noevents": "^4.55.0",
+    "@ledgerhq/hw-transport-u2f": "^4.55.0",
+    "@ledgerhq/hw-transport-web-ble": "^4.55.0",
+    "@ledgerhq/hw-transport-webauthn": "^4.55.0",
+    "@ledgerhq/hw-transport-webusb": "^4.55.0",
+    "@ledgerhq/live-common": "5.4.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",
@@ -41,8 +41,8 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "flow-bin": "^0.97.0",
+    "flow-bin": "^0.98.1",
     "parcel": "^1.12.3",
-    "pkg": "^4.3.7"
+    "pkg": "^4.3.8"
   }
 }

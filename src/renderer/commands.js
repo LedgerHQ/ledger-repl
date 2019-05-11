@@ -8,6 +8,8 @@ import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
 import getVersion from "@ledgerhq/live-common/lib/hw/getVersion";
 import getAppAndVersion from "@ledgerhq/live-common/lib/hw/getAppAndVersion";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
+import openApp from "@ledgerhq/live-common/lib/hw/openApp";
+import quitApp from "@ledgerhq/live-common/lib/hw/quitApp";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
 import uninstallApp from "@ledgerhq/live-common/lib/hw/uninstallApp";
 import installFinalFirmware from "@ledgerhq/live-common/lib/hw/installFinalFirmware";
@@ -80,6 +82,18 @@ export const commands: Command[] = [
   },
 
   {
+    id: "openApp",
+    exec: openApp,
+    form: [{ type: "ascii" }]
+  },
+
+  {
+    id: "quitApp",
+    exec: quitApp,
+    form: []
+  },
+
+  {
     id: "getDeviceName",
     exec: getDeviceName,
     form: []
@@ -111,7 +125,8 @@ export const commands: Command[] = [
         currency: { type: "cryptocurrency", default: bitcoinCurrency },
         path: { type: "derivationPath", default: "44'/0'/0'/0/0" },
         derivationMode: { type: "derivationMode", default: "" },
-        verify: { type: "checkbox", label: "Verify" }
+        verify: { type: "checkbox", label: "Verify" },
+        askChainCode: { type: "checkbox", label: "ask chainCode" }
       }
     ]
   }
