@@ -27,7 +27,7 @@
     "@ledgerhq/hw-transport-web-ble": "^4.55.0",
     "@ledgerhq/hw-transport-webauthn": "^4.55.0",
     "@ledgerhq/hw-transport-webusb": "^4.55.0",
-    "@ledgerhq/live-common": "5.4.0",
+    "@ledgerhq/live-common": "5.5.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bignumber.js": "^8.1.1",
@@ -46,6 +46,6 @@
     "babel-preset-react": "^6.24.1",
     "flow-bin": "^0.98.1",
     "parcel": "^1.12.3",
-    "pkg": "^4.3.8"
+    "pkg": "^4.4.0"
   }
 }
