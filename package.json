@@ -21,6 +21,7 @@
     "@ledgerhq/devices": "^4.55.0",
     "@ledgerhq/errors": "^4.55.0",
     "@ledgerhq/hw-transport": "^4.55.0",
+    "@ledgerhq/hw-transport-http": "^4.55.0",
     "@ledgerhq/hw-transport-node-hid-noevents": "^4.55.0",
     "@ledgerhq/hw-transport-u2f": "^4.55.0",
     "@ledgerhq/hw-transport-web-ble": "^4.55.0",

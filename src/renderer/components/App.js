@@ -117,7 +117,8 @@ const transportLabels = {
   webusb: "WebUSB",
   hid: "node-hid",
   u2f: "U2F",
-  webauthn: "WebAuthn"
+  webauthn: "WebAuthn",
+  "proxy@ws://localhost:8435": "proxy ws://localhost:8435"
 };
 
 if (typeof ledgerHidTransport === "undefined") {

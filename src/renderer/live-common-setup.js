@@ -9,6 +9,7 @@ import {
 import { map } from "rxjs/operators";
 import Transport from "@ledgerhq/hw-transport";
 import TransportWebAuthn from "@ledgerhq/hw-transport-webauthn";
+import withStaticURL from "@ledgerhq/hw-transport-http";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import TransportWebBLE from "@ledgerhq/hw-transport-web-ble";
@@ -90,14 +91,9 @@ registerTransportModule({
   open: (id: string): ?Promise<*> => {
     if (id.startsWith("webble")) {
       const existingDevice = webbleDevices[id];
-      return (existingDevice
+      return existingDevice
         ? TransportWebBLE.open(existingDevice)
-        : TransportWebBLE.create()
-      ).then(t => {
-        // fallback on create() in case discovery not used (we later should backport this in open?)
-        t.setDebugMode(true);
-        return t;
-      });
+        : TransportWebBLE.create();
     }
     return null;
   },
@@ -106,6 +102,25 @@ registerTransportModule({
     id.startsWith("webble")
       ? Promise.resolve() // nothing to do
       : null
+});
+
+let proxy;
+registerTransportModule({
+  id: "proxy",
+
+  open: (id: string): ?Promise<*> => {
+    if (id.startsWith("proxy")) {
+      const urls = id.slice(6) || "ws://localhost:8435";
+      const Tr = withStaticURL(urls);
+      return Tr.create().then(t => {
+        proxy = t;
+        return t;
+      });
+    }
+    return null;
+  },
+
+  disconnect: id => (id.startsWith("proxy") ? proxy && proxy.close() : null)
 });
 
 const { ledgerHidTransport } = window;
