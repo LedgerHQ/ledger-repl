@@ -117,10 +117,11 @@ const transportLabels = {
   webusb: "WebUSB",
   hid: "node-hid",
   u2f: "U2F",
-  webauthn: "WebAuthn"
+  webauthn: "WebAuthn",
+  "proxy@ws://localhost:8435": "proxy ws://localhost:8435"
 };
 
-if (typeof setupHID === "undefined") {
+if (typeof ledgerHidTransport === "undefined") {
   delete transportLabels.hid;
 }
 
@@ -299,8 +300,8 @@ export default () => {
 
   const onSubmitApdu = useCallback(
     async e => {
-      if (!apduInputRef.current || !transport) return;
       e.preventDefault();
+      if (!apduInputRef.current || !transport) return;
       try {
         const value = Buffer.from(apduInputRef.current.value, "hex");
         apduInputRef.current.value = "";

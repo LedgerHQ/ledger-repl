@@ -19,7 +19,10 @@
   },
   "dependencies": {
     "@ledgerhq/devices": "^4.55.0",
+    "@ledgerhq/errors": "^4.55.0",
     "@ledgerhq/hw-transport": "^4.55.0",
+    "@ledgerhq/hw-transport-http": "^4.55.0",
+    "@ledgerhq/hw-transport-node-hid-noevents": "^4.55.0",
     "@ledgerhq/hw-transport-u2f": "^4.55.0",
     "@ledgerhq/hw-transport-web-ble": "^4.55.0",
     "@ledgerhq/hw-transport-webauthn": "^4.55.0",
@@ -37,6 +40,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
