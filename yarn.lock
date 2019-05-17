@@ -791,10 +791,10 @@
     "@ledgerhq/hw-transport" "^4.56.0"
     u2f-api "0.2.7"
 
-"@ledgerhq/hw-transport-web-ble@4.56.0":
-  version "4.56.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-web-ble/-/hw-transport-web-ble-4.56.0.tgz#fdf0fda4b0114e1f70ab7683ee74fc65967b116b"
-  integrity sha512-TNu0CN7dXdpdGWr4kcLEUmq2xRpb12z94PKjxUuIMa/QoTixzOiZKzYwDMvhT2O4VyQ9mG7XaFZq4kej95NZ8A==
+"@ledgerhq/hw-transport-web-ble@4.56.1-alpha.0+4bb1693":
+  version "4.56.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-web-ble/-/hw-transport-web-ble-4.56.1-alpha.0.tgz#ec5f20cf2b899ce991a85c80a36962ce23b94814"
+  integrity sha512-ZVOAKbtX2XQXcX/uk+f00yyz9C7IjrQgcNLWzn4jZHUTHDzbniJUI2/PKHvjUwy0vrqhEwgXCKcFgoUwmHRjKg==
   dependencies:
     "@ledgerhq/devices" "^4.56.0"
     "@ledgerhq/errors" "^4.56.0"
