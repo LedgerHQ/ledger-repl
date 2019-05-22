@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import carlo from "carlo";
 import path from "path";
+import { listen } from "@ledgerhq/logs";
 import theme from "./renderer/theme";
 import exposeHidTransport from "./exposeHidTransport";
 
@@ -20,4 +21,10 @@ const exts =
   app.serveFolder(path.join(__dirname, "../www"));
   exposeHidTransport(app);
   await app.load("index.html");
+  listen(log => {
+    console.log(log);
+    app.evaluate(log => {
+      window && window._onLedgerLog && window._onLedgerLog(log);
+    }, log);
+  });
 })();

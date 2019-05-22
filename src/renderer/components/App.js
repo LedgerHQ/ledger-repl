@@ -10,10 +10,10 @@ import React, {
 import styled from "styled-components";
 import Select from "react-select";
 import { Inspector } from "react-inspector";
-import { merge, from, defer } from "rxjs";
+import { merge, from, defer, Observable } from "rxjs";
 import { map, filter } from "rxjs/operators";
+import { listen } from "@ledgerhq/logs";
 import { open, disconnect } from "@ledgerhq/live-common/lib/hw";
-import { logsObservable as bleLogs } from "@ledgerhq/hw-transport-web-ble/lib/debug";
 import { logs as socketLogs } from "@ledgerhq/live-common/lib/api/socket";
 import { commands } from "../commands";
 import {
@@ -165,6 +165,23 @@ const eventObservable = merge(
       }
     })
   ),
+  Observable.create(o =>
+    listen(log => {
+      switch (log.type) {
+        case "apdu":
+          return o.next({ type: "apdu", text: log.message });
+        case "ble-frame":
+        case "hid-frame":
+          return o.next({ type: "binary", text: log.message });
+        case "ble-error":
+          return o.next({ type: "error", text: log.message });
+        case "ble-verbose":
+          return o.next({ type: "verbose", text: log.message });
+      }
+      console.log(`(unhandled) ${log.type}: ${log.message}`);
+    })
+  )
+  /*
   bleLogs.pipe(
     map(e => {
       switch (e.type) {
@@ -199,6 +216,7 @@ const eventObservable = merge(
       }
     })
   )
+  */
 ).pipe(filter(e => e));
 
 const Log = styled.pre`
@@ -330,7 +348,6 @@ export default () => {
         t.on("disconnect", () => {
           setTransport(null);
         });
-        t.setDebugMode(log => addLog({ type: "apdu", text: log }));
       },
       error => {
         setTransportConnecting(false);

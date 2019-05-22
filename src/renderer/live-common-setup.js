@@ -65,14 +65,9 @@ registerTransportModule({
   open: (id: string): ?Promise<*> => {
     if (id.startsWith("webusb")) {
       const existingDevice = webusbDevices[id];
-      return (existingDevice
+      return existingDevice
         ? TransportWebUSB.open(existingDevice)
-        : TransportWebUSB.create()
-      ).then(t => {
-        // fallback on create() in case discovery not used (we later should backport this in open?)
-        t.setDebugMode(true);
-        return t;
-      });
+        : TransportWebUSB.create();
     }
     return null;
   },
@@ -163,16 +158,9 @@ if (ledgerHidTransport) {
     }
 
     async exchange(apdu: Buffer): Promise<Buffer> {
-      const { debug } = this;
       const inputHex = apdu.toString("hex");
-      if (debug) {
-        debug("=> " + inputHex);
-      }
       try {
         const outputHex = await cmd("exchange", inputHex);
-        if (debug) {
-          debug("<= " + outputHex);
-        }
         return Buffer.from(outputHex, "hex");
       } catch (e) {
         if (

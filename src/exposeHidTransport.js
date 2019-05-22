@@ -12,7 +12,6 @@ export default (app: *) => {
         case "open":
           invariant(!transport, "HID is already opened");
           transport = await TransportNodeHid.open("");
-          transport.setDebugMode(true);
           transport.on("disconnect", () => {
             transport = null;
           });
