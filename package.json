@@ -27,7 +27,7 @@
     "@ledgerhq/hw-transport-web-ble": "4.60.0",
     "@ledgerhq/hw-transport-webauthn": "4.60.0",
     "@ledgerhq/hw-transport-webusb": "4.60.0",
-    "@ledgerhq/live-common": "5.11.0-alpha.2",
+    "@ledgerhq/live-common": "5.11.0",
     "@ledgerhq/logs": "4.60.0",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",

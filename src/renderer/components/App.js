@@ -181,42 +181,6 @@ const eventObservable = merge(
       console.log(`(unhandled) ${log.type}: ${log.message}`);
     })
   )
-  /*
-  bleLogs.pipe(
-    map(e => {
-      switch (e.type) {
-        case "verbose":
-          return {
-            type: "verbose",
-            text: e.message
-          };
-        case "ble-error":
-          return {
-            type: "error",
-            text: e.message
-          };
-        case "ble-frame-write":
-          return {
-            type: "binary",
-            text: "=> " + e.message
-          };
-        case "ble-frame-read":
-          return {
-            type: "binary",
-            text: "<= " + e.message
-          };
-        case "ble-apdu-write":
-        case "ble-apdu-read":
-          return null;
-        default:
-          return {
-            type: "verbose",
-            text: `${e.type}: ${e.message}`
-          };
-      }
-    })
-  )
-  */
 ).pipe(filter(e => e));
 
 const Log = styled.pre`
