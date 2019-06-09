@@ -31,7 +31,8 @@ const theme = {
     command: palette.Magenta,
     apdu: palette.Blue,
     binary: palette.Green,
-    verbose: palette.White
+    verbose: palette.White,
+    announcement: palette.LightYellow
   }
 };
 

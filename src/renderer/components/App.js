@@ -235,6 +235,14 @@ const useListenTransportDisconnect = (cb, deps) => {
   );
 };
 
+const announcement = `Welcome to Ledger REPL!
+
+🎊 June 2019 update:
+- Open and Close will now map to the real methods. You will notice a .close() does not always trigger a 'disconnect'. See https://github.com/LedgerHQ/ledgerjs/issues/327
+- You can click on "X" to "leave the transport in background". That helps testing race condition behaviors.
+
+`;
+
 export default () => {
   const [leftTransports, setLeftTransports] = useState([]);
   const [transport, setTransport] = useState(null);
@@ -247,7 +255,14 @@ export default () => {
   const [commandValue, setCommandValue] = useState([]);
   const [logs, addLog] = useReducer(
     (logs, log) => logs.concat({ id: ++id, date: new Date(), ...log }),
-    []
+    [
+      {
+        id: ++id,
+        date: new Date(),
+        type: "announcement",
+        text: announcement
+      }
+    ]
   );
   const addLogError = error =>
     addLog({
@@ -268,7 +283,8 @@ export default () => {
       command: true,
       apdu: true,
       binary: true,
-      verbose: true
+      verbose: true,
+      announcement: true
     }
   );
 
@@ -563,7 +579,7 @@ export default () => {
                 </Log>
               ))}
           </div>
-          <ApduForm onSend={onSendApdu}>
+          <ApduForm onSubmit={onSendApdu}>
             <ApduInput
               ref={apduInputRef}
               type="text"
