@@ -45,6 +45,7 @@ const LeftPanel = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 `;
 
 const Section = styled.div`
@@ -58,6 +59,7 @@ const Section = styled.div`
 const SectionRow = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   > * + * {
     margin-left: 10px;
   }
@@ -216,12 +218,30 @@ let id = 0;
 
 const LS_PREF_TRANSPORT = "preferredTransport";
 
+const useListenTransportDisconnect = (cb, deps) => {
+  const ref = useRef({ cb });
+  useEffect(() => {
+    ref.current = { cb };
+  }, deps);
+  return useCallback(
+    t => {
+      const listener = () => {
+        t.off("disconnect", listener);
+        ref.current.cb(t);
+      };
+      t.on("disconnect", listener);
+    },
+    [ref]
+  );
+};
+
 export default () => {
+  const [leftTransports, setLeftTransports] = useState([]);
   const [transport, setTransport] = useState(null);
   const [transportMode, setTransportMode] = useState(
     localStorage.getItem(LS_PREF_TRANSPORT) || "webble"
   );
-  const [transportConnecting, setTransportConnecting] = useState(false);
+  const [transportOpening, setTransportOpening] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState(null);
   const [commandSub, setCommandSub] = useState(null);
   const [commandValue, setCommandValue] = useState([]);
@@ -280,7 +300,7 @@ export default () => {
 
   const apduInputRef = useRef(null);
 
-  const onSubmitApdu = useCallback(
+  const onSendApdu = useCallback(
     async e => {
       e.preventDefault();
       if (!apduInputRef.current || !transport) return;
@@ -295,30 +315,43 @@ export default () => {
     [transport]
   );
 
-  const onDisconnect = useCallback(async () => {
+  const listenTransportDisconnect = useListenTransportDisconnect(
+    t => {
+      if (transport === t) {
+        setTransport(null);
+      } else {
+        setLeftTransports(leftTransports.filter(lt => lt !== t));
+      }
+    },
+    [transport, leftTransports, setLeftTransports]
+  );
+
+  const onLeaveTransport = useCallback(() => {
     if (!transport) return;
     setTransport(null);
-    await transport.close();
-    // TODO how to truely disconnect? no semantic atm
+    setLeftTransports(leftTransports.concat([transport]));
   }, [transport]);
 
-  const onConnectTransport = useCallback(() => {
-    setTransportConnecting(true);
+  const onClose = useCallback(async () => {
+    if (!transport) return;
+    await transport.close();
+  }, [transport]);
+
+  const onOpenTransport = useCallback(() => {
+    setTransportOpening(true);
     setTransport(null);
     open(transportMode).then(
       t => {
-        setTransportConnecting(false);
+        setTransportOpening(false);
         setTransport(t);
-        t.on("disconnect", () => {
-          setTransport(null);
-        });
+        listenTransportDisconnect(t);
       },
       error => {
-        setTransportConnecting(false);
+        setTransportOpening(false);
         addLogError(error);
       }
     );
-  }, [transportMode, logs, transport]);
+  }, [transportMode, listenTransportDisconnect]);
 
   const onCommandCancel = useCallback(() => {
     if (!commandSub) return;
@@ -326,7 +359,7 @@ export default () => {
     setCommandSub(null);
   }, [commandSub]);
 
-  const onSubmitCommand = useCallback(() => {
+  const onSendCommand = useCallback(() => {
     if (!selectedCommand || !transport) return;
     addLog({
       type: "command",
@@ -382,6 +415,28 @@ export default () => {
     <Theme>
       <Container>
         <LeftPanel>
+          {leftTransports.map((t, i) => (
+            <Section key={i}>
+              <SectionRow>
+                <div style={{ flex: 1 }}>(still connected)</div>
+                <SendButton
+                  title="Re-use"
+                  onClick={() => {
+                    setTransport(t);
+                    setLeftTransports(leftTransports.filter(lt => lt !== t));
+                  }}
+                />
+                <SendButton
+                  red
+                  title="Close"
+                  onClick={() => {
+                    t.close();
+                  }}
+                />
+              </SectionRow>
+            </Section>
+          ))}
+
           <Section>
             {!transport ? (
               <SectionRow>
@@ -399,15 +454,16 @@ export default () => {
                   />
                 </div>
                 <SendButton
-                  disabled={transportConnecting}
-                  title={transportConnecting ? "Connecting..." : "Connect"}
-                  onClick={onConnectTransport}
+                  disabled={transportOpening}
+                  title={transportOpening ? "Opening..." : "Open"}
+                  onClick={onOpenTransport}
                 />
               </SectionRow>
             ) : (
               <SectionRow>
                 <div style={{ flex: 1 }}>Transport connected!</div>
-                <SendButton red title="Disconnect" onClick={onDisconnect} />
+                <SendButton secondary title="X" onClick={onLeaveTransport} />
+                <SendButton red title="Close" onClick={onClose} />
               </SectionRow>
             )}
           </Section>
@@ -430,7 +486,7 @@ export default () => {
                   commandSub ? (
                     <SendButton red title="Cancel" onClick={onCommandCancel} />
                   ) : (
-                    <SendButton title="Submit" onClick={onSubmitCommand} />
+                    <SendButton title="Send" onClick={onSendCommand} />
                   )
                 ) : null}
               </SectionRow>
@@ -507,7 +563,7 @@ export default () => {
                 </Log>
               ))}
           </div>
-          <ApduForm onSubmit={onSubmitApdu}>
+          <ApduForm onSend={onSendApdu}>
             <ApduInput
               ref={apduInputRef}
               type="text"

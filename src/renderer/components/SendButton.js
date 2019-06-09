@@ -8,7 +8,9 @@ const Button = styled.div`
   color: ${props =>
     props.disabled ? props.theme.buttonDisabledText : props.theme.buttonText};
   background-color: ${props =>
-    props.disabled
+    props.secondary
+      ? "transparent"
+      : props.disabled
       ? props.theme.buttonDisabled
       : props.red
       ? props.theme.buttonRed
@@ -22,12 +24,14 @@ type Props = {
   onClick: () => any,
   title: string,
   disabled?: boolean,
+  secondary?: boolean,
   red?: boolean
 };
 
-const SendButton = ({ onClick, title, disabled, red }: Props) => (
+const SendButton = ({ onClick, title, disabled, secondary, red }: Props) => (
   <Button
     red={red}
+    secondary={secondary}
     onClick={disabled ? undefined : onClick}
     disabled={disabled}
   >

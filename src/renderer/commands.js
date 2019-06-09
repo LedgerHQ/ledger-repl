@@ -13,7 +13,6 @@ import quitApp from "@ledgerhq/live-common/lib/hw/quitApp";
 import installApp from "@ledgerhq/live-common/lib/hw/installApp";
 import uninstallApp from "@ledgerhq/live-common/lib/hw/uninstallApp";
 import installFinalFirmware from "@ledgerhq/live-common/lib/hw/installFinalFirmware";
-import debugAppInfosForCurrency from "@ledgerhq/live-common/lib/hw/debugAppInfosForCurrency";
 import { cmd } from "./helpers/commands";
 import { getCryptoCurrencyById } from "@ledgerhq/live-common/lib/currencies";
 import type { Command } from "./helpers/commands";
@@ -109,12 +108,6 @@ export const commands: Command[] = [
         maxlength: 32
       }
     ]
-  },
-
-  {
-    id: "debugAppInfosForCurrency",
-    exec: debugAppInfosForCurrency,
-    form: [{ type: "cryptocurrency", default: bitcoinCurrency }]
   },
 
   {
