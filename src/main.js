@@ -3,7 +3,10 @@ import carlo from "carlo";
 import path from "path";
 import { listen } from "@ledgerhq/logs";
 import theme from "./renderer/theme";
-import exposeHidTransport from "./exposeHidTransport";
+
+// FIXME netlify don't like our dependency to @ledgerhq/hw-transport-node-hid-noevents
+// so we'll need to figure out something
+// import exposeHidTransport from "./exposeHidTransport";
 
 const exts =
   "/Users/grenaudeau/Library/Application Support/Electron/extensions/fmkadmapgofadopljbjfkapdkoienihi";
@@ -19,7 +22,7 @@ const exts =
   app.on("exit", () => process.exit());
   console.log(path.join(__dirname, "../www"));
   app.serveFolder(path.join(__dirname, "../www"));
-  exposeHidTransport(app);
+  // exposeHidTransport(app);
   await app.load("index.html");
   listen(log => {
     console.log(log);

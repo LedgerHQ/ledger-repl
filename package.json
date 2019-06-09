@@ -23,7 +23,6 @@
     "@ledgerhq/hw-transport": "4.61.0",
     "@ledgerhq/hw-transport-http": "4.61.0",
     "@ledgerhq/hw-transport-node-ble": "^4.61.0",
-    "@ledgerhq/hw-transport-node-hid-noevents": "4.61.0",
     "@ledgerhq/hw-transport-u2f": "4.61.0",
     "@ledgerhq/hw-transport-web-ble": "4.61.0",
     "@ledgerhq/hw-transport-webauthn": "4.61.0",
