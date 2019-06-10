@@ -294,8 +294,10 @@ export default () => {
     ]
   );
 
-  const addLog = log => dispatch({ type: "ADD", payload: log });
-  const clearLogs = () => dispatch({ type: "CLEAR" });
+  const addLog = useCallback(log => dispatch({ type: "ADD", payload: log }), [
+    dispatch
+  ]);
+  const clearLogs = useCallback(() => dispatch({ type: "CLEAR" }), [dispatch]);
 
   const addLogError = error =>
     addLog({
