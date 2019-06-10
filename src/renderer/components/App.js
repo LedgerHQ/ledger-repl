@@ -114,6 +114,26 @@ const HeaderFilter = styled.div`
   }
 `;
 
+const ClearLogs = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  padding: 5px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 0%, 0.5);
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    background: hsla(0, 0%, 100%, 0.1);
+    color: hsla(0, 0%, 100%, 0.9);
+  }
+  &:active {
+    background: hsla(0, 0%, 100%, 0.05);
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+`;
+
 const transportLabels = {
   webble: "Web BLE",
   webusb: "WebUSB",
@@ -253,8 +273,17 @@ export default () => {
   const [selectedCommand, setSelectedCommand] = useState(null);
   const [commandSub, setCommandSub] = useState(null);
   const [commandValue, setCommandValue] = useState([]);
-  const [logs, addLog] = useReducer(
-    (logs, log) => logs.concat({ id: ++id, date: new Date(), ...log }),
+  const [logs, dispatch] = useReducer(
+    (logs, action) => {
+      switch (action.type) {
+        case "ADD":
+          return [...logs, { id: ++id, date: new Date(), ...action.payload }];
+        case "CLEAR":
+          return [];
+        default:
+          return logs;
+      }
+    },
     [
       {
         id: ++id,
@@ -264,6 +293,12 @@ export default () => {
       }
     ]
   );
+
+  const addLog = useCallback(log => dispatch({ type: "ADD", payload: log }), [
+    dispatch
+  ]);
+  const clearLogs = useCallback(() => dispatch({ type: "CLEAR" }), [dispatch]);
+
   const addLogError = error =>
     addLog({
       type: "error",
@@ -559,6 +594,7 @@ export default () => {
               Verbose
             </HeaderFilter>
           </HeaderFilters>
+          <ClearLogs onClick={clearLogs}>Clear logs</ClearLogs>
           <div
             ref={logsViewRef}
             style={{
