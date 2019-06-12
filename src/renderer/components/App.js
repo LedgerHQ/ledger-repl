@@ -25,7 +25,7 @@ import type { Command } from "../helpers/commands";
 import Theme from "./Theme";
 import Form from "./Form";
 import SendButton from "./SendButton";
-
+import ApduCommandSender from './ApduCommandSender';
 // NB NB NB this file is not yet modularize XD
 
 const Container = styled.div`
@@ -97,12 +97,12 @@ const HeaderFilter = styled.div`
   background-color: transparent;
   border-bottom: 2px solid;
   border-bottom-color: ${props =>
-    props.enabled ? props.theme.logTypes[props.filter] : "rgba(0, 0, 0, 0.5)"};
+  props.enabled ? props.theme.logTypes[props.filter] : "rgba(0, 0, 0, 0.5)"};
   opacity: ${props => (props.enabled ? 1 : 0.2)};
   color: ${props =>
-    props.enabled
-      ? props.theme.logTypes[props.filter]
-      : props.theme.tabDisabledText};
+  props.enabled
+    ? props.theme.logTypes[props.filter]
+    : props.theme.tabDisabledText};
   flex: 1;
   height: 40px;
   display: flex;
@@ -182,7 +182,7 @@ const eventObservable = merge(
             type: "verbose",
             text: `network: ${e.type}${
               typeof e.message === "string" ? ": " + e.message : ""
-            }`
+              }`
           };
       }
     })
@@ -213,20 +213,6 @@ const Log = styled.pre`
   color: ${props => props.theme.logTypes[props.log.type]};
   padding: 0 10px;
   margin: 0;
-`;
-
-const ApduForm = styled.form``;
-
-const ApduInput = styled.input`
-  width: 100%;
-  padding: 5px 10px;
-  height: 40px;
-  font-size: 14px;
-  border-top: 2px solid rgba(0, 0, 0, 0.5);
-  border: none;
-  outline: none;
-  color: ${props => props.theme.text};
-  background: ${props => props.theme.darkBackground};
 `;
 
 const transportOptions = Object.keys(transportLabels).map(value => ({
@@ -260,7 +246,7 @@ const announcement = `Welcome to Ledger REPL!
 🎊 June 2019 update:
 - Open and Close will now map to the real methods. You will notice a .close() does not always trigger a 'disconnect'. See https://github.com/LedgerHQ/ledgerjs/issues/327
 - You can click on "X" to "leave the transport in background". That helps testing race condition behaviors.
-
+- Added a terminal like history. Use the up / down arrow.
 `;
 
 export default () => {
@@ -273,6 +259,7 @@ export default () => {
   const [selectedCommand, setSelectedCommand] = useState(null);
   const [commandSub, setCommandSub] = useState(null);
   const [commandValue, setCommandValue] = useState([]);
+
   const [logs, dispatch] = useReducer(
     (logs, action) => {
       switch (action.type) {
@@ -352,15 +339,15 @@ export default () => {
   const apduInputRef = useRef(null);
 
   const onSendApdu = useCallback(
-    async e => {
-      e.preventDefault();
-      if (!apduInputRef.current || !transport) return;
+    async value => {
+      if (!transport) return;
       try {
-        const value = Buffer.from(apduInputRef.current.value, "hex");
-        apduInputRef.current.value = "";
-        await transport.exchange(value);
+        const hexValueBuffer = Buffer.from(value, "hex");
+        await transport.exchange(hexValueBuffer);
+        return true;
       } catch (e) {
         addLogError(e);
+        return false;
       }
     },
     [transport]
@@ -544,12 +531,12 @@ export default () => {
               <FormContainer>
                 {selectedCommand
                   ? Object.keys(selectedCommand.dependencies || {}).map(key =>
-                      dependencies && dependencies[key] ? (
-                        <strong key={key}>'{key}' dependency resolved.</strong>
-                      ) : (
-                        <em key={key}>'{key}' dependency loading...</em>
-                      )
+                    dependencies && dependencies[key] ? (
+                      <strong key={key}>'{key}' dependency resolved.</strong>
+                    ) : (
+                      <em key={key}>'{key}' dependency loading...</em>
                     )
+                  )
                   : null}
                 {selectedCommand ? (
                   <Form
@@ -615,13 +602,10 @@ export default () => {
                 </Log>
               ))}
           </div>
-          <ApduForm onSubmit={onSendApdu}>
-            <ApduInput
-              ref={apduInputRef}
-              type="text"
-              placeholder="send an arbitrary apdu here (hexadecimal)"
-            />
-          </ApduForm>
+          <ApduCommandSender
+            disabled={!transport}
+            onSend={onSendApdu}
+          />
         </MainPanel>
       </Container>
     </Theme>
