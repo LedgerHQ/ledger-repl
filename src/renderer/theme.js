@@ -14,6 +14,7 @@ const palette = {
 };
 
 const theme = {
+  palette,
   background: palette.Black,
   darkBackground: "#21252c",
   text: palette.White,
