@@ -31,12 +31,14 @@ type Props = {
   title: string,
   disabled?: boolean,
   secondary?: boolean,
-  red?: boolean
+  red?: boolean,
+  className?: string
 };
 
-const SendButton = ({ onClick, title, disabled, secondary, red }: Props) => (
+const SendButton = ({ onClick, title, disabled, secondary, red, className }: Props) => (
   <Button
     red={red}
+    className={className}
     secondary={secondary}
     onClick={disabled ? undefined : onClick}
     disabled={disabled}

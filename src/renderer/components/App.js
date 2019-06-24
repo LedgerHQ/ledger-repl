@@ -1,6 +1,5 @@
 // @flow
 import React, {
-  Fragment,
   useState,
   useEffect,
   useReducer,
@@ -26,6 +25,9 @@ import Theme from "./Theme";
 import Form from "./Form";
 import SendButton from "./SendButton";
 import ApduCommandSender from './ApduCommandSender';
+import LiveEnvEditor from "./LiveEnvEditor";
+import {SmallButton} from "./Smallbutton";
+
 // NB NB NB this file is not yet modularize XD
 
 const Container = styled.div`
@@ -62,6 +64,15 @@ const SectionRow = styled.div`
   align-items: center;
   > * + * {
     margin-left: 10px;
+  }
+`;
+
+const AdvancedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+    > * {
+    margin: 5px 0;
   }
 `;
 
@@ -247,6 +258,7 @@ const announcement = `Welcome to Ledger REPL!
 - Open and Close will now map to the real methods. You will notice a .close() does not always trigger a 'disconnect'. See https://github.com/LedgerHQ/ledgerjs/issues/327
 - You can click on "X" to "leave the transport in background". That helps testing race condition behaviors.
 - Added a terminal like history. Use the up / down arrow.
+- Added an environment editor.
 `;
 
 export default () => {
@@ -256,6 +268,7 @@ export default () => {
     localStorage.getItem(LS_PREF_TRANSPORT) || "webble"
   );
   const [transportOpening, setTransportOpening] = useState(false);
+  const [advanced, setAdvanced] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState(null);
   const [commandSub, setCommandSub] = useState(null);
   const [commandValue, setCommandValue] = useState([]);
@@ -453,102 +466,114 @@ export default () => {
     <Theme>
       <Container>
         <LeftPanel>
-          {leftTransports.map((t, i) => (
-            <Section key={i}>
-              <SectionRow>
-                <div style={{ flex: 1 }}>(still connected)</div>
-                <SendButton
-                  title="Re-use"
-                  onClick={() => {
-                    setTransport(t);
-                    setLeftTransports(leftTransports.filter(lt => lt !== t));
-                  }}
-                />
-                <SendButton
-                  red
-                  title="Close"
-                  onClick={() => {
-                    t.close();
-                  }}
-                />
-              </SectionRow>
-            </Section>
-          ))}
-
-          <Section>
-            {!transport ? (
-              <SectionRow>
-                <div style={{ flex: 1 }}>
-                  <Select
-                    placeholder="Select a Transport"
-                    value={transportOptions.find(
-                      o => o.value === transportMode
-                    )}
-                    onChange={o => {
-                      localStorage.setItem(LS_PREF_TRANSPORT, o.value);
-                      setTransportMode(o.value);
+          <Section style={{ flex: 1 }}>
+            {leftTransports.map((t, i) => (
+              <Section key={i}>
+                <SectionRow>
+                  <div style={{ flex: 1 }}>(still connected)</div>
+                  <SendButton
+                    title="Re-use"
+                    onClick={() => {
+                      setTransport(t);
+                      setLeftTransports(leftTransports.filter(lt => lt !== t));
                     }}
-                    options={transportOptions}
                   />
-                </div>
-                <SendButton
-                  disabled={transportOpening}
-                  title={transportOpening ? "Opening..." : "Open"}
-                  onClick={onOpenTransport}
-                />
-              </SectionRow>
-            ) : (
-              <SectionRow>
-                <div style={{ flex: 1 }}>Transport connected!</div>
-                <SendButton secondary title="X" onClick={onLeaveTransport} />
-                <SendButton red title="Close" onClick={onClose} />
-              </SectionRow>
-            )}
-          </Section>
-          <Separator />
-          {transport ? (
-            <Section style={{ flex: 1 }}>
-              <SectionRow>
-                <div style={{ flex: 1 }}>
-                  <Select
-                    isDisabled={!!commandSub}
-                    placeholder="Select a command"
-                    options={commands}
-                    onChange={onSelectedCommand}
-                    value={selectedCommand}
-                    getOptionLabel={c => c.id}
-                    getOptionValue={c => c.id}
+                  <SendButton
+                    red
+                    title="Close"
+                    onClick={() => {
+                      t.close();
+                    }}
                   />
-                </div>
-                {selectedCommand ? (
-                  commandSub ? (
-                    <SendButton red title="Cancel" onClick={onCommandCancel} />
-                  ) : (
-                    <SendButton title="Send" onClick={onSendCommand} />
-                  )
-                ) : null}
-              </SectionRow>
-              <FormContainer>
-                {selectedCommand
-                  ? Object.keys(selectedCommand.dependencies || {}).map(key =>
-                    dependencies && dependencies[key] ? (
-                      <strong key={key}>'{key}' dependency resolved.</strong>
-                    ) : (
-                      <em key={key}>'{key}' dependency loading...</em>
-                    )
-                  )
-                  : null}
-                {selectedCommand ? (
-                  <Form
-                    dependencies={dependencies || {}}
-                    form={selectedCommand.form}
-                    onChange={setCommandValue}
-                    value={commandValue}
+                </SectionRow>
+              </Section>
+            ))}
+
+            <Section>
+              {!transport ? (
+                <SectionRow>
+                  <div style={{ flex: 1 }}>
+                    <Select
+                      placeholder="Select a Transport"
+                      value={transportOptions.find(
+                        o => o.value === transportMode
+                      )}
+                      onChange={o => {
+                        localStorage.setItem(LS_PREF_TRANSPORT, o.value);
+                        setTransportMode(o.value);
+                      }}
+                      options={transportOptions}
+                    />
+                  </div>
+                  <SendButton
+                    disabled={transportOpening}
+                    title={transportOpening ? "Opening..." : "Open"}
+                    onClick={onOpenTransport}
                   />
-                ) : null}
-              </FormContainer>
+                </SectionRow>
+              ) : (
+                <SectionRow>
+                  <div style={{ flex: 1 }}>Transport connected!</div>
+                  <SendButton secondary title="X" onClick={onLeaveTransport} />
+                  <SendButton red title="Close" onClick={onClose} />
+                </SectionRow>
+              )}
             </Section>
-          ) : null}
+            <Separator />
+            {transport ? (
+              <Section>
+                <SectionRow>
+                  <div style={{ flex: 1 }}>
+                    <Select
+                      isDisabled={!!commandSub}
+                      placeholder="Select a command"
+                      options={commands}
+                      onChange={onSelectedCommand}
+                      value={selectedCommand}
+                      getOptionLabel={c => c.id}
+                      getOptionValue={c => c.id}
+                    />
+                  </div>
+                  {selectedCommand ? (
+                    commandSub ? (
+                      <SendButton red title="Cancel" onClick={onCommandCancel} />
+                    ) : (
+                      <SendButton title="Send" onClick={onSendCommand} />
+                    )
+                  ) : null}
+                </SectionRow>
+                <FormContainer>
+                  {selectedCommand
+                    ? Object.keys(selectedCommand.dependencies || {}).map(key =>
+                      dependencies && dependencies[key] ? (
+                        <strong key={key}>'{key}' dependency resolved.</strong>
+                      ) : (
+                        <em key={key}>'{key}' dependency loading...</em>
+                      )
+                    )
+                    : null}
+                  {selectedCommand ? (
+                    <Form
+                      dependencies={dependencies || {}}
+                      form={selectedCommand.form}
+                      onChange={setCommandValue}
+                      value={commandValue}
+                    />
+                  ) : null}
+                </FormContainer>
+              </Section>
+            ) : null}
+          </Section>
+          <Section>
+            <AdvancedContainer>
+              <SmallButton onClick={() => setAdvanced(advanced => !advanced)}>
+                {advanced ? "Hide" : "Advanced"}
+              </SmallButton>
+              { advanced &&
+                <LiveEnvEditor />
+              }
+            </AdvancedContainer>
+          </Section>
         </LeftPanel>
         <MainPanel>
           <HeaderFilters>
