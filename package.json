@@ -37,6 +37,7 @@
     "re-resizable": "^5.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-dropzone": "^10.1.5",
     "react-inspector": "^3.0.2",
     "react-select": "^3.0.4",
     "react-table": "^6.10.0",

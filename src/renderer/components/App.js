@@ -9,6 +9,7 @@ import React, {
 import styled from "styled-components";
 import Select from "react-select";
 import { Inspector } from "react-inspector";
+import { useDropzone } from 'react-dropzone';
 import { merge, from, defer, Observable } from "rxjs";
 import { map, filter } from "rxjs/operators";
 import { listen } from "@ledgerhq/logs";
@@ -356,6 +357,12 @@ export default () => {
       if (!transport) return;
       try {
         const hexValueBuffer = Buffer.from(value, "hex");
+
+        if (hexValueBuffer.length === 0) {
+          addLogError('Invalid APDU');
+          return false;
+        }
+
         await transport.exchange(hexValueBuffer);
         return true;
       } catch (e) {
@@ -462,9 +469,56 @@ export default () => {
     }
   }, [logs]);
 
+  // Drag-and-drop APDUs functionality
+
+  const onDrop = useCallback(files => {
+    if (!transport) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async () => {
+      const list = (reader.result.toString() || '').split('\n').filter(Boolean);
+      if (list.length === 0) return;
+
+      addLog({
+        type: 'verbose',
+        text: `Attempting to send ${list.length} APDUs`
+      });
+
+      let i = 1;
+      for (let apdu of list) {
+        addLog({
+          type: 'verbose',
+          text: `APDU - ${i} / ${list.length}`
+        });
+
+        const result = await onSendApdu(apdu);
+
+        if (!result) {
+          addLogError(`Could not send APDU: ${apdu}`);
+          return;
+        }
+
+        i++;
+      }
+
+      addLog({
+        type: 'verbose',
+        text: 'Successfully sent all APDUs'
+      });
+    };
+
+    files.forEach(file => reader.readAsBinaryString(file));
+  }, [transport]);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
   return (
     <Theme>
-      <Container>
+      <Container {...getRootProps()} onClick={null}>
+        {/* Needed for drag-and-drop functionality */}
+        <input {...getInputProps()} />
+
         <LeftPanel>
           <Section style={{ flex: 1 }}>
             {leftTransports.map((t, i) => (
