@@ -457,6 +457,7 @@ export default () => {
             type: "command",
             text: `${selectedCommand.id} completed in ${delta}.`
           });
+          transport.setScrambleKey(scrambleKey);
         },
         error: error => {
           setCommandSub(null);
