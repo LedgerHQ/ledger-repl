@@ -23,16 +23,18 @@ export type DataTypeAscii = {
 type Props = {
   value: string,
   onChange: string => void,
+  placeholder?: string,
   autoFocus?: boolean
 };
 
-const AsciiField = ({ value, onChange, autoFocus }: Props) => {
+const AsciiField = ({ value, onChange, placeholder, autoFocus }: Props) => {
   return (
     <Input
       type="text"
       value={value}
       onChange={e => onChange(e.target.value)}
       autoFocus={autoFocus}
+      placeholder={placeholder}
     />
   );
 };

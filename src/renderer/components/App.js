@@ -16,6 +16,7 @@ import { listen } from "@ledgerhq/logs";
 import { open, disconnect } from "@ledgerhq/live-common/lib/hw";
 import { logs as socketLogs } from "@ledgerhq/live-common/lib/api/socket";
 import { commands } from "../commands";
+import AsciiField from './fields/AsciiField';
 import {
   execCommand,
   getDefaultValue,
@@ -155,6 +156,9 @@ const transportLabels = {
   "proxy@ws://localhost:8435": "proxy ws://localhost:8435"
 };
 
+const isTransportScrambleable = (name: string) =>
+  ['u2f', 'webauthn'].indexOf(name) > -1;
+
 if (typeof ledgerHidTransport === "undefined") {
   delete transportLabels.hid;
 }
@@ -268,6 +272,7 @@ export default () => {
   const [transportMode, setTransportMode] = useState(
     localStorage.getItem(LS_PREF_TRANSPORT) || "webble"
   );
+  const [scrambleKey, setScrambleKey] = useState('');
   const [transportOpening, setTransportOpening] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState(null);
@@ -452,6 +457,7 @@ export default () => {
             type: "command",
             text: `${selectedCommand.id} completed in ${delta}.`
           });
+          transport.setScrambleKey(scrambleKey);
         },
         error: error => {
           setCommandSub(null);
@@ -566,11 +572,25 @@ export default () => {
                   />
                 </SectionRow>
               ) : (
-                <SectionRow>
-                  <div style={{ flex: 1 }}>Transport connected!</div>
-                  <SendButton secondary title="X" onClick={onLeaveTransport} />
-                  <SendButton red title="Close" onClick={onClose} />
-                </SectionRow>
+                <React.Fragment>
+                  <SectionRow>
+                    <div style={{ flex: 1 }}>Transport connected!</div>
+                    <SendButton secondary title="X" onClick={onLeaveTransport} />
+                    <SendButton red title="Close" onClick={onClose} />
+                  </SectionRow>
+                  {isTransportScrambleable(transportMode) && (
+                    <SectionRow>
+                      <AsciiField
+                        value={scrambleKey}
+                        onChange={value => {
+                          transport.setScrambleKey(value);
+                          setScrambleKey(value);
+                        }}
+                        placeholder="Scramble key"
+                      />
+                    </SectionRow>
+                  )}
+                </React.Fragment>
               )}
             </Section>
             <Separator />
