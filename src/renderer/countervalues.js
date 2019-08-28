@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import createCounterValues from "@ledgerhq/live-common/lib/countervalues";
+import { implementCountervalues } from "@ledgerhq/live-common/lib/countervalues";
 
-// $FlowFixMe
-const countervalues = createCounterValues({
+implementCountervalues({
   network: axios,
   log: (...args) => console.log(...args), // eslint-disable-line no-console
   getAPIBaseURL: () => "https://countervalues.api.live.ledger.com",
@@ -13,8 +12,6 @@ const countervalues = createCounterValues({
   pairsSelector: () => [],
   setExchangePairsAction: () => ({})
 });
-
-export default countervalues;
 
 export const useMarketCapSort = <T: { ticker: string }>(items: T[]): T[] => {
   const [tickers, setTickers] = useState([]);

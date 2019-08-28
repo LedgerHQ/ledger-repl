@@ -13,6 +13,7 @@ import withStaticURL from "@ledgerhq/hw-transport-http";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import TransportWebBLE from "@ledgerhq/hw-transport-web-ble";
+import TransportWebHID from "@ledgerhq/hw-transport-web-hid";
 import { setNetwork } from "@ledgerhq/live-common/lib/network";
 import { registerTransportModule } from "@ledgerhq/live-common/lib/hw";
 
@@ -23,9 +24,21 @@ setNetwork(axios);
 
 const webusbDevices = {};
 
-/*
-TODO node-hid transport support + forward APDUs from renderer using a new kind of hw-transport proxy.
-*/
+registerTransportModule({
+  id: "webhid",
+
+  open: (id: string): ?Promise<*> => {
+    if (id.startsWith("webhid")) {
+      return TransportWebHID.create();
+    }
+    return null;
+  },
+
+  disconnect: id =>
+    id.startsWith("webhid")
+      ? Promise.resolve() // nothing to do
+      : null
+});
 
 registerTransportModule({
   id: "u2f",

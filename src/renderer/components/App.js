@@ -9,14 +9,14 @@ import React, {
 import styled from "styled-components";
 import Select from "react-select";
 import { Inspector } from "react-inspector";
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 import { merge, from, defer, Observable } from "rxjs";
 import { map, filter } from "rxjs/operators";
 import { listen } from "@ledgerhq/logs";
 import { open, disconnect } from "@ledgerhq/live-common/lib/hw";
 import { logs as socketLogs } from "@ledgerhq/live-common/lib/api/socket";
 import { commands } from "../commands";
-import AsciiField from './fields/AsciiField';
+import AsciiField from "./fields/AsciiField";
 import {
   execCommand,
   getDefaultValue,
@@ -26,9 +26,9 @@ import type { Command } from "../helpers/commands";
 import Theme from "./Theme";
 import Form from "./Form";
 import SendButton from "./SendButton";
-import ApduCommandSender from './ApduCommandSender';
+import ApduCommandSender from "./ApduCommandSender";
 import LiveEnvEditor from "./LiveEnvEditor";
-import {SmallButton} from "./Smallbutton";
+import { SmallButton } from "./Smallbutton";
 
 // NB NB NB this file is not yet modularize XD
 
@@ -73,7 +73,7 @@ const AdvancedContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-    > * {
+  > * {
     margin: 5px 0;
   }
 `;
@@ -110,12 +110,12 @@ const HeaderFilter = styled.div`
   background-color: transparent;
   border-bottom: 2px solid;
   border-bottom-color: ${props =>
-  props.enabled ? props.theme.logTypes[props.filter] : "rgba(0, 0, 0, 0.5)"};
+    props.enabled ? props.theme.logTypes[props.filter] : "rgba(0, 0, 0, 0.5)"};
   opacity: ${props => (props.enabled ? 1 : 0.2)};
   color: ${props =>
-  props.enabled
-    ? props.theme.logTypes[props.filter]
-    : props.theme.tabDisabledText};
+    props.enabled
+      ? props.theme.logTypes[props.filter]
+      : props.theme.tabDisabledText};
   flex: 1;
   height: 40px;
   display: flex;
@@ -150,6 +150,7 @@ const ClearLogs = styled.div`
 const transportLabels = {
   webble: "Web BLE",
   webusb: "WebUSB",
+  webhid: "WebHID",
   hid: "node-hid",
   u2f: "U2F",
   webauthn: "WebAuthn",
@@ -157,7 +158,7 @@ const transportLabels = {
 };
 
 const isTransportScrambleable = (name: string) =>
-  ['u2f', 'webauthn'].indexOf(name) > -1;
+  ["u2f", "webauthn"].indexOf(name) > -1;
 
 if (typeof ledgerHidTransport === "undefined") {
   delete transportLabels.hid;
@@ -198,7 +199,7 @@ const eventObservable = merge(
             type: "verbose",
             text: `network: ${e.type}${
               typeof e.message === "string" ? ": " + e.message : ""
-              }`
+            }`
           };
       }
     })
@@ -259,11 +260,11 @@ const useListenTransportDisconnect = (cb, deps) => {
 
 const announcement = `Welcome to Ledger REPL!
 
-🎊 June 2019 update:
-- Open and Close will now map to the real methods. You will notice a .close() does not always trigger a 'disconnect'. See https://github.com/LedgerHQ/ledgerjs/issues/327
-- You can click on "X" to "leave the transport in background". That helps testing race condition behaviors.
-- Added a terminal like history. Use the up / down arrow.
-- Added an environment editor.
+🎊 September 2019 update:
+
+- WebHID is a new experimental transport that works on Chrome Dev and by enabling chrome://flags/#enable-experimental-web-platform-features
+
+- a proxy over websocket is available in combination of \`ledger-live proxy\`
 `;
 
 export default () => {
@@ -272,7 +273,7 @@ export default () => {
   const [transportMode, setTransportMode] = useState(
     localStorage.getItem(LS_PREF_TRANSPORT) || "webble"
   );
-  const [scrambleKey, setScrambleKey] = useState('');
+  const [scrambleKey, setScrambleKey] = useState("");
   const [transportOpening, setTransportOpening] = useState(false);
   const [advanced, setAdvanced] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState(null);
@@ -364,7 +365,7 @@ export default () => {
         const hexValueBuffer = Buffer.from(value, "hex");
 
         if (hexValueBuffer.length === 0) {
-          addLogError('Invalid APDU');
+          addLogError("Invalid APDU");
           return false;
         }
 
@@ -477,45 +478,50 @@ export default () => {
 
   // Drag-and-drop APDUs functionality
 
-  const onDrop = useCallback(files => {
-    if (!transport) return;
+  const onDrop = useCallback(
+    files => {
+      if (!transport) return;
 
-    const reader = new FileReader();
+      const reader = new FileReader();
 
-    reader.onload = async () => {
-      const list = (reader.result.toString() || '').split('\n').filter(Boolean);
-      if (list.length === 0) return;
+      reader.onload = async () => {
+        const list = (reader.result.toString() || "")
+          .split("\n")
+          .filter(Boolean);
+        if (list.length === 0) return;
 
-      addLog({
-        type: 'verbose',
-        text: `Attempting to send ${list.length} APDUs`
-      });
-
-      let i = 1;
-      for (let apdu of list) {
         addLog({
-          type: 'verbose',
-          text: `APDU - ${i} / ${list.length}`
+          type: "verbose",
+          text: `Attempting to send ${list.length} APDUs`
         });
 
-        const result = await onSendApdu(apdu);
+        let i = 1;
+        for (let apdu of list) {
+          addLog({
+            type: "verbose",
+            text: `APDU - ${i} / ${list.length}`
+          });
 
-        if (!result) {
-          addLogError(`Could not send APDU: ${apdu}`);
-          return;
+          const result = await onSendApdu(apdu);
+
+          if (!result) {
+            addLogError(`Could not send APDU: ${apdu}`);
+            return;
+          }
+
+          i++;
         }
 
-        i++;
-      }
+        addLog({
+          type: "verbose",
+          text: "Successfully sent all APDUs"
+        });
+      };
 
-      addLog({
-        type: 'verbose',
-        text: 'Successfully sent all APDUs'
-      });
-    };
-
-    files.forEach(file => reader.readAsBinaryString(file));
-  }, [transport]);
+      files.forEach(file => reader.readAsBinaryString(file));
+    },
+    [transport]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -575,7 +581,11 @@ export default () => {
                 <React.Fragment>
                   <SectionRow>
                     <div style={{ flex: 1 }}>Transport connected!</div>
-                    <SendButton secondary title="X" onClick={onLeaveTransport} />
+                    <SendButton
+                      secondary
+                      title="X"
+                      onClick={onLeaveTransport}
+                    />
                     <SendButton red title="Close" onClick={onClose} />
                   </SectionRow>
                   {isTransportScrambleable(transportMode) && (
@@ -610,7 +620,11 @@ export default () => {
                   </div>
                   {selectedCommand ? (
                     commandSub ? (
-                      <SendButton red title="Cancel" onClick={onCommandCancel} />
+                      <SendButton
+                        red
+                        title="Cancel"
+                        onClick={onCommandCancel}
+                      />
                     ) : (
                       <SendButton title="Send" onClick={onSendCommand} />
                     )
@@ -619,12 +633,14 @@ export default () => {
                 <FormContainer>
                   {selectedCommand
                     ? Object.keys(selectedCommand.dependencies || {}).map(key =>
-                      dependencies && dependencies[key] ? (
-                        <strong key={key}>'{key}' dependency resolved.</strong>
-                      ) : (
-                        <em key={key}>'{key}' dependency loading...</em>
+                        dependencies && dependencies[key] ? (
+                          <strong key={key}>
+                            '{key}' dependency resolved.
+                          </strong>
+                        ) : (
+                          <em key={key}>'{key}' dependency loading...</em>
+                        )
                       )
-                    )
                     : null}
                   {selectedCommand ? (
                     <Form
@@ -643,9 +659,7 @@ export default () => {
               <SmallButton onClick={() => setAdvanced(advanced => !advanced)}>
                 {advanced ? "Hide" : "Advanced"}
               </SmallButton>
-              { advanced &&
-                <LiveEnvEditor />
-              }
+              {advanced && <LiveEnvEditor />}
             </AdvancedContainer>
           </Section>
         </LeftPanel>
@@ -701,10 +715,7 @@ export default () => {
                 </Log>
               ))}
           </div>
-          <ApduCommandSender
-            disabled={!transport}
-            onSend={onSendApdu}
-          />
+          <ApduCommandSender disabled={!transport} onSend={onSendApdu} />
         </MainPanel>
       </Container>
     </Theme>
