@@ -13,7 +13,7 @@ import withStaticURL from "@ledgerhq/hw-transport-http";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import TransportWebBLE from "@ledgerhq/hw-transport-web-ble";
-import TransportWebHID from "@ledgerhq/hw-transport-web-hid";
+import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import { setNetwork } from "@ledgerhq/live-common/lib/network";
 import { registerTransportModule } from "@ledgerhq/live-common/lib/hw";
 
