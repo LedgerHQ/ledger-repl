@@ -1,9 +1,11 @@
 // @flow
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { listCryptoCurrencies } from "@ledgerhq/live-common/lib/currencies";
+import {
+  listCryptoCurrencies,
+  useCurrenciesByMarketcap
+} from "@ledgerhq/live-common/lib/currencies";
 import type { CryptoCurrency } from "@ledgerhq/live-common/lib/types";
-import { useMarketCapSort } from "../../countervalues";
 
 export type DataTypeCryptoCurrency = {
   type: "cryptocurrency",
@@ -21,7 +23,7 @@ const TokenSelect = ({ value, onChange, filterFamilies }: Props) => {
   if (filterFamilies) {
     currencies = currencies.filter(c => filterFamilies.includes(c.family));
   }
-  currencies = useMarketCapSort(currencies);
+  currencies = useCurrenciesByMarketcap(currencies);
   return (
     <Select
       value={value}

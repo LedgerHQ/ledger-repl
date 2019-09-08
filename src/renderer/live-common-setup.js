@@ -16,11 +16,21 @@ import TransportWebBLE from "@ledgerhq/hw-transport-web-ble";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import { setNetwork } from "@ledgerhq/live-common/lib/network";
 import { registerTransportModule } from "@ledgerhq/live-common/lib/hw";
+import { implementCountervalues } from "@ledgerhq/live-common/lib/countervalues";
 
 import "@ledgerhq/live-common/lib/load/tokens/ethereum/erc20";
 
 // TODO : should log the network requests to the console itself!
 setNetwork(axios);
+
+implementCountervalues({
+  network: axios,
+  log: (...args) => console.log(...args), // eslint-disable-line no-console
+  getAPIBaseURL: () => "https://countervalues.api.live.ledger.com",
+  storeSelector: state => state.countervalues,
+  pairsSelector: () => [],
+  setExchangePairsAction: () => ({})
+});
 
 const webusbDevices = {};
 

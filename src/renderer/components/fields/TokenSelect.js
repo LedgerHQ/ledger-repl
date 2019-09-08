@@ -1,9 +1,11 @@
 // @flow
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { listTokens } from "@ledgerhq/live-common/lib/currencies";
+import {
+  listTokens,
+  useCurrenciesByMarketcap
+} from "@ledgerhq/live-common/lib/currencies";
 import type { TokenCurrency } from "@ledgerhq/live-common/lib/types";
-import { useMarketCapSort } from "../../countervalues";
 
 type Props = {
   value: ?TokenCurrency,
@@ -11,7 +13,7 @@ type Props = {
 };
 
 const TokenSelect = ({ value, onChange }: Props) => {
-  const tokens = useMarketCapSort(listTokens());
+  const tokens = useCurrenciesByMarketcap(listTokens());
   return (
     <Select
       value={value}

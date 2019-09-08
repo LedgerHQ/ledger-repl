@@ -26,9 +26,9 @@
     "@ledgerhq/hw-transport-u2f": "4.68.4",
     "@ledgerhq/hw-transport-web-ble": "4.68.4",
     "@ledgerhq/hw-transport-webauthn": "4.68.4",
-    "@ledgerhq/hw-transport-webhid": "^4.68.4",
-    "@ledgerhq/hw-transport-webusb": "4.68.4",
-    "@ledgerhq/live-common": "^7.11.0",
+    "@ledgerhq/hw-transport-webhid": "^4.69.0",
+    "@ledgerhq/hw-transport-webusb": "4.69.0",
+    "@ledgerhq/live-common": "^7.14.0",
     "@ledgerhq/logs": "4.68.2",
     "axios": "^0.19.0",
     "babel-polyfill": "^6.26.0",
@@ -38,10 +38,10 @@
     "re-resizable": "^5.0.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-dropzone": "^10.1.7",
+    "react-dropzone": "^10.1.8",
     "react-inspector": "^3.0.2",
     "react-select": "^3.0.4",
-    "react-table": "^6.10.0",
+    "react-table": "^6.10.2",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "flow-bin": "^0.106.2",
+    "flow-bin": "^0.107.0",
     "parcel": "^1.12.3",
     "pkg": "^4.4.0"
   }
