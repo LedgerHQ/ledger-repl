@@ -1,5 +1,8 @@
 // @flow
-import "babel-polyfill";
+
+// this is for react-inspector as they assume your work is legacy
+import "regenerator-runtime/runtime";
+
 import "./live-common-setup";
 import React from "react";
 import { render } from "react-dom";
