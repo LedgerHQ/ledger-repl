@@ -1,4 +1,3 @@
-import "babel-polyfill";
 import carlo from "carlo";
 import path from "path";
 import { listen } from "@ledgerhq/logs";
