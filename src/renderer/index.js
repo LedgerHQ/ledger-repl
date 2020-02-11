@@ -23,7 +23,7 @@ const root = document.getElementById("main");
 
 if (root) {
   if (window.location.host === "ledger-repl.netlify.com") {
-    root.innerHTML = `<h1 style="color:white">The tools have moved to: ${window.location.href.replace(
+    root.innerHTML = `<h1 style="color:white">The tools has moved to: ${window.location.href.replace(
       "ledger-repl.netlify.com",
       "ledger-repl.now.sh"
     )}</h1>`;

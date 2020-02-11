@@ -225,7 +225,7 @@ const useListenTransportDisconnect = (cb, deps) => {
 
 const announcement = `Welcome to Ledger REPL!
 
-🎊 The tool have moved to https://ledger-repl.now.sh/
+🎊 The tool has moved to https://ledger-repl.now.sh/
 `;
 
 export default () => {
