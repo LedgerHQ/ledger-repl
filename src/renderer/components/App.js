@@ -225,11 +225,7 @@ const useListenTransportDisconnect = (cb, deps) => {
 
 const announcement = `Welcome to Ledger REPL!
 
-🎊 September 2019 update:
-
-- WebHID is a new experimental transport that works on Chrome Dev and by enabling chrome://flags/#enable-experimental-web-platform-features
-
-- a proxy over websocket is available in combination of \`ledger-live proxy\`
+🎊 The tool have moved to https://ledger-repl.now.sh/
 `;
 
 export default () => {
