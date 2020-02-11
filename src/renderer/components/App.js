@@ -14,7 +14,6 @@ import { merge, from, defer, Observable } from "rxjs";
 import { map, filter } from "rxjs/operators";
 import { listen } from "@ledgerhq/logs";
 import { open, disconnect } from "@ledgerhq/live-common/lib/hw";
-import { logs as socketLogs } from "@ledgerhq/live-common/lib/api/socket";
 import { commands } from "../commands";
 import AsciiField from "./fields/AsciiField";
 import {
@@ -164,62 +163,28 @@ if (typeof ledgerHidTransport === "undefined") {
   delete transportLabels.hid;
 }
 
-const eventObservable = merge(
-  socketLogs.pipe(
-    map(e => {
-      switch (e.type) {
-        case "warning":
-          return {
-            type: "warn",
-            text: e.message
-          };
-
-        case "socket-opened":
-          return {
-            type: "verbose",
-            text: "WS opened " + e.url
-          };
-
-        case "socket-closed":
-          return {
-            type: "verbose",
-            text: "WS closed"
-          };
-
-        case "socket-message-warning":
-        case "socket-message-error":
-        case "socket-error":
-          return {
-            type: "error",
-            text: e.type + " " + e.message
-          };
-
-        default:
-          return {
-            type: "verbose",
-            text: `network: ${e.type}${
-              typeof e.message === "string" ? ": " + e.message : ""
-            }`
-          };
-      }
-    })
-  ),
-  Observable.create(o =>
-    listen(log => {
-      switch (log.type) {
-        case "apdu":
-          return o.next({ type: "apdu", text: log.message });
-        case "ble-frame":
-        case "hid-frame":
-          return o.next({ type: "binary", text: log.message });
-        case "ble-error":
-          return o.next({ type: "error", text: log.message });
-        case "ble-verbose":
-          return o.next({ type: "verbose", text: log.message });
-      }
-      console.log(`(unhandled) ${log.type}: ${log.message}`);
-    })
-  )
+const eventObservable = Observable.create(o =>
+  listen(log => {
+    switch (log.type) {
+      case "apdu":
+        return o.next({ type: "apdu", text: log.message });
+      case "ble-frame":
+      case "hid-frame":
+        return o.next({ type: "binary", text: log.message });
+      case "ble-error":
+        return o.next({ type: "error", text: log.message });
+      case "ble-verbose":
+        return o.next({ type: "verbose", text: log.message });
+      case "socket-in":
+      case "socket-out":
+        return o.next({ type: "verbose", text: log.type, object: log.data });
+      case "socket-close":
+        return o.next({ type: "verbose", text: "socket closed" });
+      case "socket-opened":
+        return o.next({ type: "verbose", text: log.message });
+    }
+    console.log(`(unhandled) ${log.type}: ${log.message}`);
+  })
 ).pipe(filter(e => e));
 
 const Log = styled.pre`
