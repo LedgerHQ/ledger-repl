@@ -225,7 +225,7 @@ const useListenTransportDisconnect = (cb, deps) => {
 
 const announcement = `Welcome to Ledger REPL!
 
-🎊 The tool has moved to https://ledger-repl.now.sh/
+🎊 We have recently fixed our WebUSB transport for Chrome 91 and this tool can be used to test it out on different environments.
 `;
 
 export default () => {
