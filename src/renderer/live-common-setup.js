@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import {
   deserializeError,
   DisconnectedDevice,
-  DisconnectedDeviceDuringOperation
+  DisconnectedDeviceDuringOperation,
 } from "@ledgerhq/errors";
 import { map } from "rxjs/operators";
 import Transport from "@ledgerhq/hw-transport";
@@ -14,23 +14,7 @@ import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import TransportWebBLE from "@ledgerhq/hw-transport-web-ble";
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import { setNetwork } from "@ledgerhq/live-common/lib/network";
 import { registerTransportModule } from "@ledgerhq/live-common/lib/hw";
-import { implementCountervalues } from "@ledgerhq/live-common/lib/countervalues";
-
-import "@ledgerhq/live-common/lib/load/tokens/ethereum/erc20";
-
-// TODO : should log the network requests to the console itself!
-setNetwork(axios);
-
-implementCountervalues({
-  network: axios,
-  log: (...args) => console.log(...args), // eslint-disable-line no-console
-  getAPIBaseURL: () => "https://countervalues.api.live.ledger.com",
-  storeSelector: state => state.countervalues,
-  pairsSelector: () => [],
-  setExchangePairsAction: () => ({})
-});
 
 const webusbDevices = {};
 
@@ -44,10 +28,10 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id =>
+  disconnect: (id) =>
     id.startsWith("webhid")
       ? Promise.resolve() // nothing to do
-      : null
+      : null,
 });
 
 registerTransportModule({
@@ -60,10 +44,10 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id =>
+  disconnect: (id) =>
     id.startsWith("u2f")
       ? Promise.resolve() // nothing to do
-      : null
+      : null,
 });
 
 registerTransportModule({
@@ -76,10 +60,10 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id =>
+  disconnect: (id) =>
     id.startsWith("webauthn")
       ? Promise.resolve() // nothing to do
-      : null
+      : null,
 });
 
 registerTransportModule({
@@ -95,10 +79,10 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id =>
+  disconnect: (id) =>
     id.startsWith("webusb")
       ? Promise.resolve() // nothing to do
-      : null
+      : null,
 });
 
 const webbleDevices = {};
@@ -116,10 +100,10 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id =>
+  disconnect: (id) =>
     id.startsWith("webble")
       ? Promise.resolve() // nothing to do
-      : null
+      : null,
 });
 
 let proxy;
@@ -130,7 +114,7 @@ registerTransportModule({
     if (id.startsWith("proxy")) {
       const urls = id.slice(6) || "ws://localhost:8435";
       const Tr = withStaticURL(urls);
-      return Tr.create().then(t => {
+      return Tr.create().then((t) => {
         proxy = t;
         return t;
       });
@@ -138,7 +122,7 @@ registerTransportModule({
     return null;
   },
 
-  disconnect: id => (id.startsWith("proxy") ? proxy && proxy.close() : null)
+  disconnect: (id) => (id.startsWith("proxy") ? proxy && proxy.close() : null),
 });
 
 const { ledgerHidTransport } = window;
@@ -155,7 +139,7 @@ if (ledgerHidTransport) {
   class HIDProxy extends Transport<*> {
     static isSupported = () => Promise.resolve(true);
     static list = () => Promise.resolve([null]);
-    static listen = o => {
+    static listen = (o) => {
       let unsubscribed;
       setTimeout(() => {
         if (unsubscribed) return;
@@ -165,7 +149,7 @@ if (ledgerHidTransport) {
       return {
         unsubscribe: () => {
           unsubscribed = true;
-        }
+        },
       };
     };
 
@@ -200,13 +184,13 @@ if (ledgerHidTransport) {
   registerTransportModule({
     id: "hid",
 
-    open: id => {
+    open: (id) => {
       if (id.startsWith("hid")) {
         return HIDProxy.open();
       }
       return null;
     },
 
-    disconnect: id => (id.startsWith("hid") ? cmd("close") : null)
+    disconnect: (id) => (id.startsWith("hid") ? cmd("close") : null),
   });
 }
