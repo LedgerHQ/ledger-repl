@@ -1,7 +1,7 @@
 {
   "name": "ledger-repl",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/main/main.js",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
