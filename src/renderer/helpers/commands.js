@@ -1,5 +1,5 @@
 // @flow
-
+// TODO: move to typescript
 import type Transport from "@ledgerhq/hw-transport";
 import type { CryptoCurrency } from "@ledgerhq/live-common/lib/types";
 import type { Observable } from "rxjs";
@@ -11,7 +11,7 @@ type Exec = (
 ) => Promise<any> | Observable<any>;
 
 export type Deps = {
-  [_: string]: (Transport<any>, ...a: any) => Promise<any>
+  [_: string]: (Transport<any>, ...a: any) => Promise<any>,
 };
 
 export type Command = {
@@ -25,7 +25,7 @@ export type Command = {
 
   mapArgs?: (args: any[], dependencies: Object) => any,
 
-  dependencies?: Deps
+  dependencies?: Deps,
 };
 
 type FormObj = { [_: string]: Form };
@@ -34,7 +34,7 @@ export type Form = DataType | FormObj | Form[];
 export const cmd = (id: string, exec: Exec, ...form: Form[]) => ({
   id,
   exec,
-  form
+  form,
 });
 
 export const resolveDependencies = (
@@ -44,10 +44,10 @@ export const resolveDependencies = (
   const deps = c.dependencies || {};
   return Object.keys(deps).reduce(
     (p, k) =>
-      p.then(obj =>
-        deps[k](transport).then(value => ({
+      p.then((obj) =>
+        deps[k](transport).then((value) => ({
           ...obj,
-          [k]: value
+          [k]: value,
         }))
       ),
     Promise.resolve({})

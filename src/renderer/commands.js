@@ -25,19 +25,19 @@ export const commands: Command[] = [
   {
     id: "getVersion",
     exec: getVersion,
-    form: []
+    form: [],
   },
 
   {
     id: "getAppAndVersion",
     exec: getAppAndVersion,
-    form: []
+    form: [],
   },
 
   {
     id: "getDeviceInfo",
     exec: getDeviceInfo,
-    form: []
+    form: [],
   },
 
   {
@@ -45,9 +45,9 @@ export const commands: Command[] = [
     exec: genuineCheck,
     mapArgs: mapDeviceInfo,
     dependencies: {
-      deviceInfo: getDeviceInfo
+      deviceInfo: getDeviceInfo,
     },
-    form: []
+    form: [],
   },
 
   { id: "installFinalFirmware", exec: installFinalFirmware, form: [] },
@@ -57,13 +57,13 @@ export const commands: Command[] = [
     exec: installApp,
     mapArgs: mapTargetId,
     dependencies: {
-      deviceInfo: getDeviceInfo
+      deviceInfo: getDeviceInfo,
     },
     form: [
       {
-        type: "application"
-      }
-    ]
+        type: "application",
+      },
+    ],
   },
 
   {
@@ -71,31 +71,31 @@ export const commands: Command[] = [
     exec: uninstallApp,
     mapArgs: mapTargetId,
     dependencies: {
-      deviceInfo: getDeviceInfo
+      deviceInfo: getDeviceInfo,
     },
     form: [
       {
-        type: "application"
-      }
-    ]
+        type: "application",
+      },
+    ],
   },
 
   {
     id: "openApp",
     exec: openApp,
-    form: [{ type: "ascii" }]
+    form: [{ type: "ascii" }],
   },
 
   {
     id: "quitApp",
     exec: quitApp,
-    form: []
+    form: [],
   },
 
   {
     id: "getDeviceName",
     exec: getDeviceName,
-    form: []
+    form: [],
   },
 
   {
@@ -105,9 +105,9 @@ export const commands: Command[] = [
       {
         type: "ascii",
         default: "",
-        maxlength: 32
-      }
-    ]
+        maxlength: 32,
+      },
+    ],
   },
 
   {
@@ -119,8 +119,8 @@ export const commands: Command[] = [
         path: { type: "derivationPath", default: "44'/0'/0'/0/0" },
         derivationMode: { type: "derivationMode", default: "" },
         verify: { type: "checkbox", label: "Verify" },
-        askChainCode: { type: "checkbox", label: "ask chainCode" }
-      }
-    ]
-  }
+        askChainCode: { type: "checkbox", label: "ask chainCode" },
+      },
+    ],
+  },
 ];
