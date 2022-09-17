@@ -1,7 +1,8 @@
 // @flow
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import manager from "@ledgerhq/live-common/lib/manager";
+import manager, { getProviderId } from "@ledgerhq/live-common/lib/manager";
+import ManagerAPI from "@ledgerhq/live-common/lib/api/Manager";
 import type {
   ApplicationVersion,
   DeviceInfo
@@ -28,7 +29,43 @@ const ApplicationField = ({
 
   useEffect(() => {
     if (!deviceInfo) return;
-    manager.getAppsList(deviceInfo).then(setApplications);
+    const provider = getProviderId(deviceInfo);
+    const deviceVersionP = ManagerAPI.getDeviceVersion(
+      deviceInfo.targetId,
+      provider
+    );
+
+    const firmwareDataP = deviceVersionP.then((deviceVersion) =>
+      ManagerAPI.getCurrentFirmware({
+        deviceId: deviceVersion.id,
+        version: deviceInfo.version,
+        provider,
+      })
+    );
+
+    const latestFirmwareForDeviceP =
+      manager.getLatestFirmwareForDevice(deviceInfo);
+
+    const firmwareP = Promise.all([
+      firmwareDataP,
+      latestFirmwareForDeviceP,
+    ]).then(([firmwareData, updateAvailable]) => ({
+      ...firmwareData,
+      updateAvailable,
+    }));
+
+    const applicationsByDeviceP = Promise.all([
+      deviceVersionP,
+      firmwareDataP,
+    ]).then(([deviceVersion, firmwareData]) =>
+      ManagerAPI.applicationsByDevice({
+        provider,
+        current_se_firmware_final_version: firmwareData.id,
+        device_version: deviceVersion.id,
+      })
+    );
+
+    applicationsByDeviceP.then(setApplications);
   }, [deviceInfo]);
 
   return (
