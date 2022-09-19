@@ -6,6 +6,7 @@ import getDeviceName from "@ledgerhq/live-common/lib/hw/getDeviceName";
 import getDeviceInfo from "@ledgerhq/live-common/lib/hw/getDeviceInfo";
 import getAddress from "@ledgerhq/live-common/lib/hw/getAddress";
 import getVersion from "@ledgerhq/live-common/lib/hw/getVersion";
+import { createDeviceSocket as socket } from "@ledgerhq/live-common/lib/api/socket";
 import getAppAndVersion from "@ledgerhq/live-common/lib/hw/getAppAndVersion";
 import genuineCheck from "@ledgerhq/live-common/lib/hw/genuineCheck";
 import openApp from "@ledgerhq/live-common/lib/hw/openApp";
@@ -78,6 +79,12 @@ export const commands: Command[] = [
         type: "application",
       },
     ],
+  },
+
+  {
+    id: "socket",
+    exec: socket,
+    form: [{ url: { type: "ascii" } }],
   },
 
   {
