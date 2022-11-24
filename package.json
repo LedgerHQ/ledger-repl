@@ -29,8 +29,6 @@
     "@ledgerhq/errors": "6.10.0",
     "@ledgerhq/hw-transport": "6.20.0",
     "@ledgerhq/hw-transport-http": "6.20.0",
-    "@ledgerhq/hw-transport-node-ble": "^6.20.0",
-    "@ledgerhq/hw-transport-node-hid-noevents": "^6.20.0",
     "@ledgerhq/hw-transport-u2f": "5.36.0-deprecated",
     "@ledgerhq/hw-transport-web-ble": "6.21.0",
     "@ledgerhq/hw-transport-webauthn": "5.36.0-deprecated",
